@@ -17,24 +17,27 @@
     />
     <link rel="stylesheet" href="./assets/css/style.css" />
 
-    <title>Document</title>
+    <title>Weather Dashboard</title>
   </head>
 
   <body>
-    <header class="text-center">
-      <h1>Header</h1>
+    <header class="text-center my-4">
+      <h1>Weather Dashboard</h1>
     </header>
     <main>
-      <div
-        class="card container mx-auto my-5"
-        id="#welcome-card"
-        style="width: 18rem"
-      >
+      <div class="card col-5 mx-auto">
+        <h5 class="card-header">Search for a City</h5>
         <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          </p>
+          <h5 class="card-title">Enter a City or ZipCode:</h5>
+          <input
+            class="form-control my-3"
+            type="text"
+            placeholder="City or ZipCode"
+            aria-label="city search input"
+          />
+          <div class="d-grid">
+            <button type="button" class="btn btn-primary">Search</button>
+          </div>
         </div>
       </div>
     </main>

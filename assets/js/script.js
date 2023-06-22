@@ -7,6 +7,10 @@ const openWeatherApiKey = "f06064b77c654c7cbd74422f1aaaf3c6";
 // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
 // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
 
+// Use the[5 Day Weather Forecast](https://openweathermap.org/forecast5)
+// to retrieve weather data for cities.The base URL should look like the following:
+// `https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}`
+
 // ~~~~~~~~ SELECT ELEMENTS TO BE DISPLAYED AFTER SEARCH ~~~~~~~~
 var $weatherToday = $("#weatherToday").hide();
 // five day will contain 5 one days
@@ -20,7 +24,7 @@ $("#searchBtn").click(function (e) {
   console.log("clicked");
   // const userQuery = $("#userQuery").val();
   // const coords = getCoordinates(userQuery);
-  // DEBUG: get coords from user query
+  // FIXME: get coords from user query
   testCoords = {
     lat: 40.7127,
     lon: -73.9872,
@@ -37,33 +41,55 @@ $("#searchBtn").click(function (e) {
     };
     // ~~~~~~~~ DISPLAY RESULTS ~~~~~~~~
     // TODO: make this pretty - this is not putting it in list
-    const weatherCardToday = buildCard(weather);
-    $("#userPrompt").after(weatherCardToday);
-    // $weatherToday
-    //   .text(`${weather.temp}°C\n${weather.wind}mph\n${weather.humidity}%`)
-    //   .show();
-    // $weatherFiveDay.text(`TODO:PLACEHOLDER`).show();
-    // $searchesRecent.text(`TODO:PLACEHOLDER`).show();
+    const weatherCards = buildCards(data);
+    $("#userPrompt").after(
+      `<div class="row mx-5 my-4" id="weatherCardRow"></div>`
+    );
+    let theseCards = "";
+    for ([key, value] of Object.entries(weatherCards)) {
+      theseCards += value;
+      // $("#userPrompt").after(`${value}`);
+      // $weatherToday
+      //   .text(`${weather.temp}°C\n${weather.wind}mph\n${weather.humidity}%`)
+      //   .show();
+      // $weatherFiveDay.text(`TODO:PLACEHOLDER`).show();
+      // $searchesRecent.text(`TODO:PLACEHOLDER`).show();
+    }
+    $(`#weatherCardRow`).html(theseCards);
   });
 });
 
 // ~~~~~~~~ BUILD CARDS ~~~~~~~~
-function buildCard(weatherData) {
-  const weatherCardToday = `
-  <div id="weatherToday" class="card col-5 mx-auto">
-    <h5 class="card-header">Today:</h5>
-    <div class="card-body">
-      <ul class="list-group">
-        <li class="list-group-item">Temperature: ${weatherData.temp}°</li>
-        <li class="list-group-item">Weather: ${weatherData.weather}</li>
-        <li class="list-group-item">Wind: ${weatherData.wind}</li>
-        <li class="list-group-item">Humidity: ${weatherData.humidity}%</li>
-        <li class="list-group-item">${weatherData.icon}</li>
-      </ul>
+function buildCards(weatherData) {
+  // FIXME: different times of same day instead of different days
+  const weatherCards = {};
+  for (let i = 0; i < 5; i++) {
+    weatherCards[`weather_${i}`] = `
+    <div id="weather_${i}" class="card col-4 mx-auto">
+      <h5 class="card-header">${dayjs.unix(weatherData.list[i].dt)}</h5>
+      <div class="card-body">
+        <ul class="list-group">
+          <li class="list-group-item">Temperature: ${
+            weatherData.list[i].main.temp
+          }°K</li>
+          <li class="list-group-item">Condition: ${
+            weatherData.list[i].weather[0].main
+          }</li>
+          <li class="list-group-item">Wind: ${
+            weatherData.list[i].wind.speed
+          }</li>
+          <li class="list-group-item">Humidity: ${
+            weatherData.list[i].main.humidity
+          }%</li>
+          <li class="list-group-item">${
+            weatherData.list[i].weather[0].icon
+          }</li>
+        </ul>
+      </div>
     </div>
-  </div>
-  `;
-  return weatherCardToday;
+    `;
+  }
+  return weatherCards;
 }
 
 // ~~~~~~~~ API CALLS ~~~~~~~~
